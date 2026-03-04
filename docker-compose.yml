@@ -1,0 +1,116 @@
+services:
+  users-db:
+    image: postgres:16-alpine
+    container_name: users-db
+    environment:
+      POSTGRES_DB: usersdb
+      POSTGRES_USER: users
+      POSTGRES_PASSWORD: userspass
+    volumes:
+      - users_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  posts-db:
+    image: postgres:16-alpine
+    container_name: posts-db
+    environment:
+      POSTGRES_DB: postsdb
+      POSTGRES_USER: posts
+      POSTGRES_PASSWORD: postspass
+    volumes:
+      - posts_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  comments-db:
+    image: postgres:16-alpine
+    container_name: comments-db
+    environment:
+      POSTGRES_DB: commentsdb
+      POSTGRES_USER: comments
+      POSTGRES_PASSWORD: commentspass
+    volumes:
+      - comments_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+
+  users-service:
+    build:
+      context: ./services/users-service
+    container_name: users-service
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgres://users:userspass@users-db:5432/usersdb
+    depends_on:
+      - users-db
+    ports:
+      - "3002:3002"
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+    container_name: auth-service
+    environment:
+      PORT: 3001
+      USERS_SERVICE_URL: http://users-service:3002
+      JWT_SECRET: super-secret-change-me
+      JWT_EXPIRES_IN: 24h
+    depends_on:
+      - users-service
+    ports:
+      - "3001:3001"
+
+  posts-service:
+    build:
+      context: ./services/posts-service
+    container_name: posts-service
+    environment:
+      PORT: 3003
+      DATABASE_URL: postgres://posts:postspass@posts-db:5432/postsdb
+      USERS_SERVICE_URL: http://users-service:3002
+    depends_on:
+      - posts-db
+      - users-service
+    ports:
+      - "3003:3003"
+
+  comments-service:
+    build:
+      context: ./services/comments-service
+    container_name: comments-service
+    environment:
+      PORT: 3004
+      DATABASE_URL: postgres://comments:commentspass@comments-db:5432/commentsdb
+      USERS_SERVICE_URL: http://users-service:3002
+      POSTS_SERVICE_URL: http://posts-service:3003
+    depends_on:
+      - comments-db
+      - users-service
+      - posts-service
+    ports:
+      - "3004:3004"
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    environment:
+      PORT: 3000
+      AUTH_SERVICE_URL: http://auth-service:3001
+      USERS_SERVICE_URL: http://users-service:3002
+      POSTS_SERVICE_URL: http://posts-service:3003
+      COMMENTS_SERVICE_URL: http://comments-service:3004
+      JWT_SECRET: super-secret-change-me
+    depends_on:
+      - auth-service
+      - users-service
+      - posts-service
+      - comments-service
+    ports:
+      - "3000:3000"
+
+volumes:
+  users_data:
+  posts_data:
+  comments_data:

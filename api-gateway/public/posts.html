@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Posts | Blog Microservicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-100">
+    <div id="nav-slot"></div>
+
+    <main class="mx-auto max-w-6xl px-4 py-8">
+      <header class="mb-6">
+        <h1 class="text-2xl font-bold text-slate-900">Publicaciones</h1>
+        <p class="text-sm text-slate-600">Likes, tags, buscador, filtros, paginacion y comentarios anidados.</p>
+      </header>
+
+      <div id="page-message" class="mb-4 hidden"></div>
+
+      <section class="mb-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <form id="filters-form" class="grid gap-3 md:grid-cols-4">
+          <div class="md:col-span-2">
+            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Buscar por titulo</label>
+            <input id="search-input" name="q" placeholder="Ejemplo: docker, node, microservicios" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Filtro por tag</label>
+            <select id="tag-filter" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none">
+              <option value="">Todos</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">Elementos por pagina</label>
+            <select id="limit-select" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none">
+              <option value="5">5</option>
+              <option value="10" selected>10</option>
+              <option value="20">20</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-4 flex flex-wrap items-center gap-2">
+            <button class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">Aplicar filtros</button>
+            <button id="clear-filters-btn" type="button" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Limpiar</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="create-post-section" class="mb-6 hidden rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <h2 class="text-lg font-semibold text-slate-900">Nuevo post</h2>
+        <form id="create-post-form" class="mt-4 grid gap-3 md:grid-cols-2">
+          <div class="md:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-700">Titulo</label>
+            <input name="title" required class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-700">Contenido</label>
+            <textarea name="content" rows="4" required class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"></textarea>
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-700">Tags (coma separada)</label>
+            <input name="tags" placeholder="nodejs, docker, api" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+          </div>
+
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-700">Subir imagen</label>
+            <input id="create-image-file" name="imageFile" type="file" accept="image/*" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-700">URL imagen (opcional)</label>
+            <input id="create-image-url" name="imageUrl" type="url" placeholder="https://..." class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none" />
+          </div>
+
+          <div class="md:col-span-2 flex items-center gap-3">
+            <button class="rounded-lg bg-sky-700 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-800">Publicar</button>
+            <span id="upload-status" class="text-sm text-slate-500"></span>
+          </div>
+        </form>
+      </section>
+
+      <section id="posts-list" class="space-y-4"></section>
+
+      <footer class="mt-6 flex items-center justify-between rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+        <button id="prev-page" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+          Anterior
+        </button>
+        <p id="page-info" class="text-sm text-slate-600">Pagina 1</p>
+        <button id="next-page" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+          Siguiente
+        </button>
+      </footer>
+    </main>
+
+    <script src="/js/shared.js"></script>
+    <script src="/js/posts.js"></script>
+  </body>
+</html>

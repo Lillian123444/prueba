@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Microservicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-100">
+    <div id="nav-slot"></div>
+    <main class="mx-auto max-w-3xl px-4 py-16">
+      <div class="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+        <h1 class="text-2xl font-bold text-slate-900">Cargando...</h1>
+        <p class="mt-2 text-sm text-slate-600">Redireccionando a la pantalla correcta.</p>
+      </div>
+    </main>
+
+    <script src="/js/shared.js"></script>
+    <script>
+      window.BlogApp.renderNavbar();
+      (async () => {
+        const user = await window.BlogApp.verifySession();
+        if (user) {
+          window.location.replace('/posts.html');
+        } else {
+          window.location.replace('/login.html');
+        }
+      })();
+    </script>
+  </body>
+</html>

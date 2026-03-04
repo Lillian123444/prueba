@@ -1,0 +1,235 @@
+(() => {
+  const ROLE_LABELS = {
+    admin: 'Administrador',
+    author: 'Autor',
+    reader: 'Lector'
+  };
+
+  function getToken() {
+    return localStorage.getItem('blog_token') || '';
+  }
+
+  function getUser() {
+    const raw = localStorage.getItem('blog_user');
+    if (!raw) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(raw);
+    } catch (_error) {
+      localStorage.removeItem('blog_user');
+      return null;
+    }
+  }
+
+  function setSession(token, user) {
+    localStorage.setItem('blog_token', token);
+    localStorage.setItem('blog_user', JSON.stringify(user));
+  }
+
+  function clearSession() {
+    localStorage.removeItem('blog_token');
+    localStorage.removeItem('blog_user');
+  }
+
+  async function api(path, options = {}) {
+    const isFormData = options.body instanceof FormData;
+    const headers = {
+      ...(options.headers || {})
+    };
+
+    if (!isFormData && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    const token = getToken();
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(path, {
+      ...options,
+      headers
+    });
+
+    if (response.status === 204) {
+      return null;
+    }
+
+    let data = {};
+    try {
+      data = await response.json();
+    } catch (_error) {
+      data = {};
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || 'Request failed');
+    }
+
+    return data;
+  }
+
+  async function verifySession() {
+    const token = getToken();
+    if (!token) {
+      return null;
+    }
+
+    try {
+      const result = await api('/api/auth/verify');
+      const payload = result.user || {};
+      const current = getUser() || {};
+      const merged = {
+        sub: payload.sub,
+        name: payload.name || current.name || '',
+        email: payload.email || current.email || '',
+        role: payload.role || current.role || 'reader'
+      };
+
+      localStorage.setItem('blog_user', JSON.stringify(merged));
+      return merged;
+    } catch (_error) {
+      clearSession();
+      return null;
+    }
+  }
+
+  function roleLabel(role) {
+    return ROLE_LABELS[role] || role;
+  }
+
+  function hasRole(user, roles) {
+    return Boolean(user && roles.includes(user.role));
+  }
+
+  async function ensureAuth(options = {}) {
+    const { roles = [], redirectTo = '/login.html' } = options;
+    const user = await verifySession();
+
+    if (!user) {
+      window.location.replace(redirectTo);
+      return null;
+    }
+
+    if (roles.length > 0 && !hasRole(user, roles)) {
+      window.location.replace('/posts.html');
+      return null;
+    }
+
+    return user;
+  }
+
+  async function ensureGuest(redirectTo = '/posts.html') {
+    const user = await verifySession();
+    if (user) {
+      window.location.replace(redirectTo);
+      return false;
+    }
+
+    return true;
+  }
+
+  function renderNavbar(targetId = 'nav-slot') {
+    const target = document.getElementById(targetId);
+    if (!target) {
+      return;
+    }
+
+    const user = getUser();
+    const publicLinks = [
+      '<a href="/login.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Login</a>',
+      '<a href="/register.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Registro</a>'
+    ];
+
+    const privateLinks = [
+      '<a href="/posts.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Posts</a>',
+      '<a href="/profile.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Perfil</a>'
+    ];
+
+    if (user?.role === 'admin') {
+      privateLinks.push('<a href="/admin.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Admin</a>');
+    }
+
+    const links = user ? privateLinks : publicLinks;
+
+    target.innerHTML = `
+      <div class="w-full border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+          <a href="/posts.html" class="text-lg font-bold text-slate-900">Blog Microservicios</a>
+          <div class="flex items-center gap-4">
+            ${links.join('')}
+            ${
+              user
+                ? `<span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">${roleLabel(user.role)}</span>
+                   <button id="logout-btn" class="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800">Salir</button>`
+                : ''
+            }
+          </div>
+        </div>
+      </div>
+    `;
+
+    const logoutButton = document.getElementById('logout-btn');
+    if (logoutButton) {
+      logoutButton.addEventListener('click', () => {
+        clearSession();
+        window.location.replace('/login.html');
+      });
+    }
+  }
+
+  function escapeHtml(text) {
+    return String(text)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
+  function message(targetId, text, variant = 'info') {
+    const element = document.getElementById(targetId);
+    if (!element) {
+      return;
+    }
+
+    const styles = {
+      info: 'bg-sky-50 text-sky-700 border-sky-200',
+      error: 'bg-red-50 text-red-700 border-red-200',
+      success: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    };
+
+    element.className = `rounded-lg border px-3 py-2 text-sm ${styles[variant] || styles.info}`;
+    element.textContent = text;
+    element.classList.remove('hidden');
+  }
+
+  function clearMessage(targetId) {
+    const element = document.getElementById(targetId);
+    if (!element) {
+      return;
+    }
+
+    element.classList.add('hidden');
+    element.textContent = '';
+  }
+
+  window.BlogApp = {
+    api,
+    clearMessage,
+    clearSession,
+    ensureAuth,
+    ensureGuest,
+    escapeHtml,
+    getToken,
+    getUser,
+    hasRole,
+    message,
+    renderNavbar,
+    roleLabel,
+    setSession,
+    verifySession
+  };
+})();
