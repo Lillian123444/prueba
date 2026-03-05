@@ -8,6 +8,16 @@
   }
 
   const tbody = document.getElementById('users-tbody');
+  const usersSearch = document.getElementById('users-search');
+  const statsGeneratedAt = document.getElementById('stats-generated-at');
+  const roleChartCanvas = document.getElementById('role-chart');
+  const topTagsChartCanvas = document.getElementById('top-tags-chart');
+  const activityChartCanvas = document.getElementById('activity-chart');
+  const topTagsList = document.getElementById('top-tags-list');
+  const topPostsList = document.getElementById('top-posts-list');
+
+  const allUsers = [];
+  const charts = [];
 
   function setText(id, value) {
     const element = document.getElementById(id);
@@ -18,10 +28,167 @@
 
   function listMarkup(items, emptyMessage, mapFn) {
     if (!Array.isArray(items) || items.length === 0) {
-      return `<li class="rounded-md border border-dashed border-slate-300 p-2 text-slate-500">${escapeHtml(emptyMessage)}</li>`;
+      return `<li>${escapeHtml(emptyMessage)}</li>`;
     }
 
     return items.map(mapFn).join('');
+  }
+
+  function renderUsersTable(query = '') {
+    const normalizedQuery = String(query || '').trim().toLowerCase();
+    const rows = allUsers.filter((item) => {
+      if (!normalizedQuery) {
+        return true;
+      }
+
+      const role = String(item.role || '').toLowerCase();
+      const name = String(item.name || '').toLowerCase();
+      const email = String(item.email || '').toLowerCase();
+
+      return role.includes(normalizedQuery) || name.includes(normalizedQuery) || email.includes(normalizedQuery);
+    });
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" class="muted">Sin usuarios para el filtro actual</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows
+      .map(
+        (item) => `
+          <tr>
+            <td>${item.id}</td>
+            <td>${escapeHtml(item.name)}</td>
+            <td>${escapeHtml(item.email)}</td>
+            <td>${roleLabel(item.role)}</td>
+          </tr>
+        `
+      )
+      .join('');
+  }
+
+  function destroyCharts() {
+    while (charts.length > 0) {
+      const chart = charts.pop();
+      chart.destroy();
+    }
+  }
+
+  function renderCharts(stats) {
+    destroyCharts();
+
+    if (typeof window.Chart !== 'function') {
+      message('page-message', 'Chart.js no esta disponible en este navegador.', 'error');
+      return;
+    }
+
+    const roleStats = stats.users?.byRole || {};
+    const roleValues = [
+      Number(roleStats.admin || 0),
+      Number(roleStats.author || 0),
+      Number(roleStats.reader || 0)
+    ];
+
+    charts.push(
+      new window.Chart(roleChartCanvas, {
+        type: 'doughnut',
+        data: {
+          labels: ['Admin', 'Author', 'Reader'],
+          datasets: [
+            {
+              data: roleValues,
+              backgroundColor: ['#0284c7', '#2563eb', '#14b8a6'],
+              borderWidth: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      })
+    );
+
+    const topTags = Array.isArray(stats.posts?.topTags) ? stats.posts.topTags : [];
+    const topTagsLabels = topTags.map((item) => item.name);
+    const topTagsValues = topTags.map((item) => Number(item.usageCount || 0));
+
+    charts.push(
+      new window.Chart(topTagsChartCanvas, {
+        type: 'bar',
+        data: {
+          labels: topTagsLabels,
+          datasets: [
+            {
+              label: 'Uso',
+              data: topTagsValues,
+              backgroundColor: '#0ea5e9',
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      })
+    );
+
+    charts.push(
+      new window.Chart(activityChartCanvas, {
+        type: 'bar',
+        data: {
+          labels: ['Posts', 'Likes', 'Comentarios'],
+          datasets: [
+            {
+              label: 'Cantidad',
+              data: [
+                Number(stats.posts?.totalPosts || 0),
+                Number(stats.posts?.totalLikes || 0),
+                Number(stats.comments?.totalComments || 0)
+              ],
+              backgroundColor: ['#0369a1', '#e11d48', '#047857'],
+              borderRadius: 10
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                precision: 0
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              display: false
+            }
+          }
+        }
+      })
+    );
   }
 
   try {
@@ -29,6 +196,8 @@
       api('/api/users'),
       api('/api/admin/stats')
     ]);
+
+    allUsers.splice(0, allUsers.length, ...users);
 
     setText('stat-total-users', stats.users?.totalUsers || 0);
     setText('stat-total-posts', stats.posts?.totalPosts || 0);
@@ -39,38 +208,30 @@
     setText('stat-reader-count', stats.users?.byRole?.reader || 0);
     setText('stat-total-tags', stats.posts?.totalTags || 0);
 
-    const topTagsList = document.getElementById('top-tags-list');
     topTagsList.innerHTML = listMarkup(
       stats.posts?.topTags,
       'No hay tags aun',
-      (item) => `<li class="rounded-md border border-slate-200 bg-slate-50 px-3 py-2"><span class="font-semibold">#${escapeHtml(item.name)}</span> - ${item.usageCount} uso(s)</li>`
+      (item) => `<li><strong>#${escapeHtml(item.name)}</strong> · ${item.usageCount} uso(s)</li>`
     );
 
-    const topPostsList = document.getElementById('top-posts-list');
     topPostsList.innerHTML = listMarkup(
       stats.posts?.mostLikedPosts,
       'No hay likes aun',
-      (item) => `<li class="rounded-md border border-slate-200 bg-slate-50 px-3 py-2"><span class="font-semibold">${escapeHtml(item.title)}</span> - ${item.likesCount} like(s)</li>`
+      (item) => `<li><strong>${escapeHtml(item.title)}</strong> · ${item.likesCount} like(s)</li>`
     );
 
-    if (users.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-4 text-center text-sm text-slate-500">Sin usuarios</td></tr>';
-      return;
+    if (statsGeneratedAt) {
+      const generatedDate = stats.generatedAt ? new Date(stats.generatedAt) : new Date();
+      statsGeneratedAt.textContent = `Ultima actualizacion: ${generatedDate.toLocaleString('es-BO')}`;
     }
 
-    tbody.innerHTML = users
-      .map(
-        (item) => `
-          <tr class="border-t border-slate-200">
-            <td class="px-4 py-3 text-sm text-slate-700">${item.id}</td>
-            <td class="px-4 py-3 text-sm text-slate-700">${escapeHtml(item.name)}</td>
-            <td class="px-4 py-3 text-sm text-slate-700">${escapeHtml(item.email)}</td>
-            <td class="px-4 py-3 text-sm text-slate-700">${roleLabel(item.role)}</td>
-          </tr>
-        `
-      )
-      .join('');
+    renderCharts(stats);
+    renderUsersTable();
   } catch (error) {
     message('page-message', error.message, 'error');
   }
+
+  usersSearch?.addEventListener('input', () => {
+    renderUsersTable(usersSearch.value);
+  });
 })();

@@ -5,83 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin | Blog Microservicios</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/app.css" />
   </head>
-  <body class="min-h-screen bg-slate-100">
+  <body class="app-shell">
     <div id="nav-slot"></div>
 
-    <main class="mx-auto max-w-6xl px-4 py-8">
-      <h1 class="text-2xl font-bold text-slate-900">Panel de administracion</h1>
-      <p class="mt-1 text-sm text-slate-600">Estadisticas basicas del sistema y gestion de usuarios.</p>
+    <main class="page-wrap admin-wrap">
+      <aside class="panel admin-menu">
+        <h2>Menu admin</h2>
+        <p class="muted">Navegacion rapida del panel.</p>
+        <nav>
+          <a href="#dashboard">Dashboard general</a>
+          <a href="#insights">Graficos</a>
+          <a href="#rankings">Rankings</a>
+          <a href="#users">Usuarios</a>
+        </nav>
+      </aside>
 
-      <div id="page-message" class="mt-4 hidden"></div>
+      <section class="admin-content">
+        <section class="hero">
+          <p class="hero-kicker">Control total</p>
+          <h1>Panel de administracion</h1>
+          <p>Monitorea actividad, revisa graficos y consulta usuarios desde un espacio dedicado para admin.</p>
+        </section>
 
-      <section class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Usuarios</p>
-          <p id="stat-total-users" class="mt-2 text-2xl font-bold text-slate-900">0</p>
-        </article>
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Posts</p>
-          <p id="stat-total-posts" class="mt-2 text-2xl font-bold text-slate-900">0</p>
-        </article>
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Likes</p>
-          <p id="stat-total-likes" class="mt-2 text-2xl font-bold text-slate-900">0</p>
-        </article>
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Comentarios</p>
-          <p id="stat-total-comments" class="mt-2 text-2xl font-bold text-slate-900">0</p>
-        </article>
-      </section>
+        <div id="page-message" class="message-box hidden"></div>
 
-      <section class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Admins</p>
-          <p id="stat-admin-count" class="mt-2 text-lg font-bold text-slate-900">0</p>
-        </article>
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Authors</p>
-          <p id="stat-author-count" class="mt-2 text-lg font-bold text-slate-900">0</p>
-        </article>
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Readers</p>
-          <p id="stat-reader-count" class="mt-2 text-lg font-bold text-slate-900">0</p>
-        </article>
-        <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-          <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Tags</p>
-          <p id="stat-total-tags" class="mt-2 text-lg font-bold text-slate-900">0</p>
-        </article>
-      </section>
+        <section id="dashboard" class="stats-grid">
+          <article class="stat-card">
+            <p class="label">Usuarios</p>
+            <p id="stat-total-users" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Posts</p>
+            <p id="stat-total-posts" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Likes</p>
+            <p id="stat-total-likes" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Comentarios</p>
+            <p id="stat-total-comments" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Admins</p>
+            <p id="stat-admin-count" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Authors</p>
+            <p id="stat-author-count" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Readers</p>
+            <p id="stat-reader-count" class="value">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="label">Tags</p>
+            <p id="stat-total-tags" class="value">0</p>
+          </article>
+        </section>
 
-      <section class="mt-6 grid gap-4 lg:grid-cols-2">
-        <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 class="text-lg font-semibold text-slate-900">Top tags</h2>
-          <ul id="top-tags-list" class="mt-3 space-y-2 text-sm text-slate-700"></ul>
-        </article>
-        <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h2 class="text-lg font-semibold text-slate-900">Posts mas likeados</h2>
-          <ul id="top-posts-list" class="mt-3 space-y-2 text-sm text-slate-700"></ul>
-        </article>
-      </section>
+        <section id="insights" class="charts-grid">
+          <article class="panel chart-card">
+            <h3>Distribucion por rol</h3>
+            <p class="muted">Participacion de cada tipo de usuario.</p>
+            <canvas id="role-chart" aria-label="Distribucion de roles"></canvas>
+          </article>
 
-      <section class="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-200 px-4 py-3">
-          <h2 class="text-lg font-semibold text-slate-900">Usuarios</h2>
-        </div>
-        <table class="min-w-full">
-          <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-600">
-            <tr>
-              <th class="px-4 py-3">ID</th>
-              <th class="px-4 py-3">Nombre</th>
-              <th class="px-4 py-3">Correo</th>
-              <th class="px-4 py-3">Rol</th>
-            </tr>
-          </thead>
-          <tbody id="users-tbody"></tbody>
-        </table>
+          <article class="panel chart-card">
+            <h3>Top tags</h3>
+            <p class="muted">Tags con mayor uso en publicaciones.</p>
+            <canvas id="top-tags-chart" aria-label="Top tags"></canvas>
+          </article>
+
+          <article class="panel chart-card">
+            <h3>Actividad global</h3>
+            <p class="muted">Comparacion entre posts, likes y comentarios.</p>
+            <canvas id="activity-chart" aria-label="Actividad global"></canvas>
+          </article>
+        </section>
+
+        <section id="rankings" class="charts-grid">
+          <article class="panel">
+            <h3>Top tags (lista)</h3>
+            <ul id="top-tags-list" class="simple-list"></ul>
+          </article>
+          <article class="panel">
+            <h3>Posts mas likeados</h3>
+            <ul id="top-posts-list" class="simple-list"></ul>
+          </article>
+        </section>
+
+        <section id="users" class="panel">
+          <div class="panel-title-row">
+            <div>
+              <h3>Usuarios registrados</h3>
+              <p id="stats-generated-at" class="muted">Actualizando...</p>
+            </div>
+            <div>
+              <label class="field-label" for="users-search">Buscar usuario</label>
+              <input id="users-search" class="input" placeholder="Nombre, email o rol" />
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody"></tbody>
+            </table>
+          </div>
+        </section>
       </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="/js/shared.js"></script>
     <script src="/js/admin.js"></script>
   </body>

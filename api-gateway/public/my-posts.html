@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mis Posts | Blog Microservicios</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/css/app.css" />
+  </head>
+  <body class="app-shell">
+    <div id="nav-slot"></div>
+
+    <main class="page-wrap">
+      <section class="hero">
+        <p class="hero-kicker">Zona creador</p>
+        <h1>Mis posts</h1>
+        <p>Gestiona tus publicaciones en una pantalla separada: crea, edita y elimina sin mezclarlo con el feed general.</p>
+      </section>
+
+      <div id="page-message" class="message-box hidden"></div>
+
+      <section class="panel" id="editor-panel">
+        <div class="panel-title-row">
+          <div>
+            <h2 id="editor-title">Crear nuevo post</h2>
+            <p id="editor-subtitle">Completa los campos y publica cuando este listo.</p>
+          </div>
+          <button id="reset-editor-btn" class="btn btn-secondary" type="button">Modo crear</button>
+        </div>
+
+        <form id="post-editor-form" class="editor-grid">
+          <input id="editing-post-id" name="editingPostId" type="hidden" />
+
+          <div>
+            <label class="field-label" for="post-title">Titulo</label>
+            <input id="post-title" name="title" class="input" required />
+          </div>
+
+          <div>
+            <label class="field-label" for="post-content">Contenido</label>
+            <textarea id="post-content" name="content" class="textarea" rows="5" required></textarea>
+          </div>
+
+          <div class="editor-two">
+            <div>
+              <label class="field-label" for="post-tags">Tags (coma separada)</label>
+              <input id="post-tags" name="tags" class="input" placeholder="nodejs, docker, api" />
+            </div>
+            <div>
+              <label class="field-label" for="post-image-file">Subir imagen</label>
+              <input id="post-image-file" name="imageFile" type="file" accept="image/*" class="input" />
+            </div>
+          </div>
+
+          <div>
+            <label class="field-label" for="post-image-url">URL de imagen (opcional)</label>
+            <input id="post-image-url" name="imageUrl" type="url" class="input" placeholder="https://..." />
+          </div>
+
+          <div class="inline-actions">
+            <button id="save-post-btn" class="btn btn-primary" type="submit">Publicar</button>
+            <button id="cancel-edit-btn" class="btn btn-ghost hidden" type="button">Cancelar edicion</button>
+            <span id="upload-status" class="upload-status"></span>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <form id="filters-form" class="filters-layout">
+          <div class="search-area">
+            <label class="field-label" for="search-input">Buscar en mis posts</label>
+            <input id="search-input" name="q" class="input input-search" placeholder="Filtra tus publicaciones por titulo" />
+          </div>
+
+          <div class="compact-filters">
+            <div>
+              <label class="field-label" for="tag-filter">Tag</label>
+              <select id="tag-filter" class="select">
+                <option value="">Todos</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="limit-select">Resultados por pagina</label>
+              <select id="limit-select" class="select">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="filter-actions">
+            <button class="btn btn-primary" type="submit">Aplicar filtros</button>
+            <button id="clear-filters-btn" class="btn btn-ghost" type="button">Limpiar</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="posts-list" class="posts-stack"></section>
+
+      <footer class="pagination">
+        <button id="prev-page" class="btn btn-ghost" type="button">Anterior</button>
+        <p id="page-info">Pagina 1</p>
+        <button id="next-page" class="btn btn-ghost" type="button">Siguiente</button>
+      </footer>
+    </main>
+
+    <script src="/js/shared.js"></script>
+    <script src="/js/my-posts.js"></script>
+  </body>
+</html>
