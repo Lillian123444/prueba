@@ -226,6 +226,74 @@
     return parsed;
   }
 
+  function debounce(fn, delayMs = 320) {
+    let timeoutId = null;
+
+    const debounced = (...args) => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+
+      timeoutId = setTimeout(() => {
+        timeoutId = null;
+        fn(...args);
+      }, delayMs);
+    };
+
+    debounced.cancel = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    };
+
+    return debounced;
+  }
+
+  function readQueryState(keys = []) {
+    const params = new URLSearchParams(window.location.search);
+
+    return keys.reduce((acc, key) => {
+      acc[key] = params.get(key);
+      return acc;
+    }, {});
+  }
+
+  function syncQueryState(state, options = {}) {
+    const {
+      keys = Object.keys(state),
+      defaults = {},
+      replace = true
+    } = options;
+
+    const params = new URLSearchParams();
+
+    keys.forEach((key) => {
+      const value = state[key];
+      const defaultValue = defaults[key];
+
+      if (
+        value === null ||
+        value === undefined ||
+        value === '' ||
+        (defaultValue !== undefined && String(value) === String(defaultValue))
+      ) {
+        return;
+      }
+
+      params.set(key, String(value));
+    });
+
+    const query = params.toString();
+    const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
+
+    if (replace) {
+      window.history.replaceState(null, '', nextUrl);
+    } else {
+      window.history.pushState(null, '', nextUrl);
+    }
+  }
+
   function message(targetId, text, variant = 'info') {
     const element = document.getElementById(targetId);
     if (!element) {
@@ -257,6 +325,7 @@
     api,
     clearMessage,
     clearSession,
+    debounce,
     ensureAuth,
     ensureGuest,
     escapeHtml,
@@ -266,9 +335,11 @@
     hasRole,
     message,
     parsePositiveInt,
+    readQueryState,
     renderNavbar,
     roleLabel,
     setSession,
+    syncQueryState,
     verifySession
   };
 })();
