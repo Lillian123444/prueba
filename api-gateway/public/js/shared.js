@@ -131,6 +131,13 @@
     return true;
   }
 
+  function navLink(href, label, isActive) {
+    const activeClasses = isActive
+      ? 'bg-sky-100 text-sky-800 ring-1 ring-sky-300'
+      : 'text-slate-700 hover:text-sky-700';
+    return `<a href="${href}" class="rounded-full px-3 py-1.5 text-sm font-semibold transition ${activeClasses}">${label}</a>`;
+  }
+
   function renderNavbar(targetId = 'nav-slot') {
     const target = document.getElementById(targetId);
     if (!target) {
@@ -138,27 +145,35 @@
     }
 
     const user = getUser();
+    const pathname = window.location.pathname.toLowerCase();
+    const isActive = (href) => pathname === href.toLowerCase();
+
     const publicLinks = [
-      '<a href="/login.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Login</a>',
-      '<a href="/register.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Registro</a>'
+      navLink('/login.html', 'Login', isActive('/login.html')),
+      navLink('/register.html', 'Registro', isActive('/register.html'))
     ];
 
     const privateLinks = [
-      '<a href="/posts.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Posts</a>',
-      '<a href="/profile.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Perfil</a>'
+      navLink('/posts.html', 'Posts', isActive('/posts.html'))
     ];
 
+    if (user && hasRole(user, ['admin', 'author'])) {
+      privateLinks.push(navLink('/my-posts.html', 'Mis posts', isActive('/my-posts.html')));
+    }
+
+    privateLinks.push(navLink('/profile.html', 'Perfil', isActive('/profile.html')));
+
     if (user?.role === 'admin') {
-      privateLinks.push('<a href="/admin.html" class="text-sm font-medium text-slate-700 hover:text-sky-700">Admin</a>');
+      privateLinks.push(navLink('/admin.html', 'Admin', isActive('/admin.html')));
     }
 
     const links = user ? privateLinks : publicLinks;
 
     target.innerHTML = `
       <div class="w-full border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4">
+        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
           <a href="/posts.html" class="text-lg font-bold text-slate-900">Blog Microservicios</a>
-          <div class="flex items-center gap-4">
+          <div class="flex flex-wrap items-center gap-2">
             ${links.join('')}
             ${
               user

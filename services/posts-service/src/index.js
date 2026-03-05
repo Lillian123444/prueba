@@ -294,6 +294,9 @@ app.get('/posts', async (req, res) => {
 
 app.get('/posts/author/:authorId', async (req, res) => {
   const authorId = Number(req.params.authorId);
+  const q = String(req.query.q || '').trim();
+  const rawTags = String(req.query.tags || req.query.tag || '').trim();
+  const tags = parseTagsInput(rawTags);
   const pagination = parsePagination(req.query);
   const viewerId = parseViewerId(req.query.viewerId);
 
@@ -302,7 +305,7 @@ app.get('/posts/author/:authorId', async (req, res) => {
   }
 
   try {
-    const data = await listPosts({ authorId }, pagination, viewerId);
+    const data = await listPosts({ authorId, q, tags }, pagination, viewerId);
     return res.json(data);
   } catch (error) {
     console.error('GET /posts/author/:authorId error', error);

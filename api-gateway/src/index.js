@@ -215,6 +215,25 @@ app.get('/api/posts', authOptional, async (req, res) => {
   }
 });
 
+app.get('/api/posts/mine', authRequired, requireRole('admin', 'author'), async (req, res) => {
+  try {
+    const response = await axios.get(`${services.posts}/posts/author/${req.user.sub}`, {
+      params: {
+        q: req.query.q,
+        tag: req.query.tag,
+        tags: req.query.tags,
+        page: req.query.page,
+        limit: req.query.limit,
+        viewerId: req.user.sub
+      }
+    });
+
+    return res.json(response.data);
+  } catch (error) {
+    return mapAxiosError(error, res);
+  }
+});
+
 app.get('/api/posts/:id', authOptional, async (req, res) => {
   try {
     const response = await axios.get(`${services.posts}/posts/${req.params.id}`, {
