@@ -160,7 +160,18 @@ Luego crear Pull Request hacia `develop` y finalmente merge a `main`.
 - [Fase 6 - Tipos de implementacion](./docs/06-ejecucion-y-despliegue.md)
 - [Fase 7 - Hosting](./docs/07-despliegue-render.md)
 - [Fase 8 - Documentacion final](./docs/08-documentacion-final.md)
+- [Fase 9 - Checklist de entrega](./docs/09-checklist-entrega.md)
 
-## 9. Defensa oral (guia rapida)
+## 9. Verificacion rapida pre-entrega
+
+Con el stack levantado, ejecutar:
+
+```bash
+powershell -ExecutionPolicy Bypass -File .\scripts\smoke-local.ps1
+```
+
+Si todos los checks salen en `OK`, la base tecnica esta lista para demo.
+
+## 10. Defensa oral (guia rapida)
 
 Ver `docs/08-documentacion-final.md`, seccion "Guion de defensa oral".
