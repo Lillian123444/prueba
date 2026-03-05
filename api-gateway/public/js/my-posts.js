@@ -4,6 +4,7 @@
     clearMessage,
     ensureAuth,
     escapeHtml,
+    formatDateTime,
     message,
     renderNavbar
   } = window.BlogApp;
@@ -44,17 +45,6 @@
   const uploadStatus = document.getElementById('upload-status');
   const imageFileInput = document.getElementById('post-image-file');
   const imageUrlInput = document.getElementById('post-image-url');
-
-  function formatDate(value) {
-    try {
-      return new Date(value).toLocaleString('es-BO', {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      });
-    } catch (_error) {
-      return String(value || '');
-    }
-  }
 
   function parseTags(input) {
     return String(input || '')
@@ -149,7 +139,7 @@
         <p class="comment-text">${escapeHtml(comment.content)}</p>
         <div class="comment-meta">
           <span>💬 Autor ${comment.authorId}</span>
-          <span>${formatDate(comment.createdAt)}</span>
+          <span>${formatDateTime(comment.createdAt)}</span>
           <button data-action="reply-comment" data-post-id="${postId}" data-comment-id="${comment.id}">↩ Responder</button>
           ${
             canDeleteComment(comment)
@@ -222,7 +212,7 @@
         <header class="post-header">
           <div>
             <h2 class="post-title">${escapeHtml(post.title)}</h2>
-            <p class="post-meta">Publicado ${formatDate(post.createdAt)} · Actualizado ${formatDate(post.updatedAt || post.createdAt)}</p>
+            <p class="post-meta">Publicado ${formatDateTime(post.createdAt)} · Actualizado ${formatDateTime(post.updatedAt || post.createdAt)}</p>
           </div>
           <div class="tag-cloud">
             ${

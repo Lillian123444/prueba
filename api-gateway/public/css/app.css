@@ -1,20 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 :root {
-  --bg-start: #f4efe7;
-  --bg-end: #dfe8ff;
-  --ink: #12203a;
-  --ink-soft: #475569;
-  --surface: rgba(255, 255, 255, 0.82);
-  --surface-strong: #ffffff;
-  --line: #d8deeb;
-  --accent: #0b79d0;
-  --accent-strong: #075985;
-  --danger: #c62828;
-  --heart: #e11d48;
-  --mint: #047857;
-  --shadow-soft: 0 24px 60px rgba(15, 23, 42, 0.1);
-  --shadow-card: 0 12px 32px rgba(15, 23, 42, 0.08);
+  --bg-start: #05070d;
+  --bg-end: #141a2a;
+  --ink: #e5ecfa;
+  --ink-soft: #9fb0cd;
+  --surface: rgba(18, 24, 38, 0.86);
+  --surface-strong: #161d2d;
+  --line: #2a3550;
+  --accent: #26b0ff;
+  --accent-strong: #0086d1;
+  --danger: #f04b61;
+  --heart: #ff5f79;
+  --mint: #22c3a6;
+  --shadow-soft: 0 26px 62px rgba(0, 0, 0, 0.45);
+  --shadow-card: 0 16px 36px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -27,8 +27,8 @@ body.app-shell {
   color: var(--ink);
   font-family: 'Manrope', 'Segoe UI', sans-serif;
   background:
-    radial-gradient(160% 120% at 0% 0%, rgba(255, 255, 255, 0.9), transparent 45%),
-    radial-gradient(140% 140% at 100% 0%, rgba(148, 163, 255, 0.22), transparent 44%),
+    radial-gradient(140% 120% at 0% 0%, rgba(38, 176, 255, 0.16), transparent 44%),
+    radial-gradient(140% 140% at 100% 0%, rgba(255, 95, 121, 0.12), transparent 45%),
     linear-gradient(160deg, var(--bg-start), var(--bg-end));
 }
 
@@ -44,7 +44,7 @@ body.app-shell {
   border: 1px solid var(--line);
   border-radius: 1.5rem;
   padding: 1.35rem 1.35rem 1.25rem;
-  background: linear-gradient(140deg, rgba(255, 255, 255, 0.96), rgba(239, 246, 255, 0.93));
+  background: linear-gradient(145deg, rgba(16, 23, 37, 0.96), rgba(21, 31, 49, 0.95));
   box-shadow: var(--shadow-soft);
 }
 
@@ -56,7 +56,7 @@ body.app-shell {
   width: 150px;
   height: 150px;
   border-radius: 999px;
-  background: radial-gradient(circle, rgba(14, 165, 233, 0.27), rgba(14, 165, 233, 0));
+  background: radial-gradient(circle, rgba(38, 176, 255, 0.35), rgba(38, 176, 255, 0));
 }
 
 .hero-kicker {
@@ -66,7 +66,7 @@ body.app-shell {
   text-transform: uppercase;
   font-weight: 700;
   font-size: 0.78rem;
-  color: #0369a1;
+  color: #72d6ff;
 }
 
 .hero h1 {
@@ -95,7 +95,7 @@ body.app-shell {
   border-radius: 1.25rem;
   padding: 1rem;
   background: var(--surface);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   box-shadow: var(--shadow-card);
 }
 
@@ -146,20 +146,20 @@ body.app-shell {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
-  color: #64748b;
+  color: #8ea4c9;
 }
 
 .input,
 .select,
 .textarea {
   width: 100%;
-  border: 1px solid #c7d1e3;
+  border: 1px solid #384663;
   border-radius: 0.85rem;
   padding: 0.65rem 0.85rem;
   font: inherit;
   font-size: 0.95rem;
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(8, 13, 24, 0.75);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
@@ -168,7 +168,7 @@ body.app-shell {
 .textarea:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.17);
+  box-shadow: 0 0 0 4px rgba(38, 176, 255, 0.2);
 }
 
 .input-search {
@@ -216,30 +216,31 @@ body.app-shell {
 }
 
 .btn-dark {
-  background: #111827;
-  color: #fff;
+  background: #05070d;
+  color: #f5f8ff;
+  border-color: #32466a;
 }
 
 .btn-secondary {
-  border-color: #bfccde;
-  background: #f8fbff;
-  color: #1f2937;
+  border-color: #395278;
+  background: rgba(16, 24, 38, 0.9);
+  color: #d7e6ff;
 }
 
 .btn-danger {
-  background: #dc2626;
+  background: #cf3f57;
   color: #fff;
 }
 
 .btn-warn {
-  background: #d97706;
+  background: #f08a2c;
   color: #fff;
 }
 
 .btn-ghost {
-  border-color: #c7d2e7;
-  background: #fff;
-  color: #1f2937;
+  border-color: #355177;
+  background: rgba(17, 26, 43, 0.8);
+  color: #d3e5ff;
 }
 
 .posts-stack {
@@ -277,7 +278,7 @@ body.app-shell {
 .post-open-hint {
   font-size: 0.74rem;
   font-weight: 700;
-  color: #0369a1;
+  color: #7ad5ff;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -298,7 +299,7 @@ body.app-shell {
 .post-meta {
   margin-top: 0.25rem;
   font-size: 0.78rem;
-  color: #6b7280;
+  color: #8ea1c1;
 }
 
 .tag-cloud {
@@ -312,9 +313,9 @@ body.app-shell {
   padding: 0.2rem 0.62rem;
   font-size: 0.72rem;
   font-weight: 700;
-  border: 1px solid #c8dbf8;
-  background: #eff6ff;
-  color: #1d4ed8;
+  border: 1px solid #35598f;
+  background: rgba(11, 38, 69, 0.75);
+  color: #82d5ff;
 }
 
 .post-image {
@@ -323,14 +324,14 @@ body.app-shell {
   max-height: 340px;
   border-radius: 0.95rem;
   object-fit: cover;
-  border: 1px solid #dbe3f1;
+  border: 1px solid #2f3b58;
 }
 
 .post-content {
   margin-top: 0.9rem;
   white-space: pre-wrap;
   line-height: 1.6;
-  color: #334155;
+  color: #ced8eb;
 }
 
 .post-actions {
@@ -353,11 +354,11 @@ body.app-shell {
 }
 
 .engage-chip {
-  border: 1px solid #cad5e8;
+  border: 1px solid #344866;
   border-radius: 999px;
   padding: 0.4rem 0.75rem;
-  background: #fff;
-  color: #1f2937;
+  background: rgba(11, 18, 31, 0.9);
+  color: #d9e8ff;
   font-size: 0.82rem;
   font-weight: 700;
   display: inline-flex;
@@ -376,7 +377,8 @@ body.app-shell {
 
 .engage-chip-action:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+  border-color: #4aaef2;
 }
 
 .engage-icon {
@@ -385,16 +387,16 @@ body.app-shell {
 }
 
 .engage-liked {
-  border-color: #fda4af;
-  background: #fff1f2;
-  color: #be123c;
+  border-color: #ff8ea0;
+  background: rgba(84, 20, 33, 0.62);
+  color: #ffd4dc;
 }
 
 .read-only-note {
   margin: 0.85rem 0 0;
   border-radius: 0.75rem;
-  background: #f1f5f9;
-  color: #475569;
+  background: rgba(16, 26, 42, 0.9);
+  color: #9db0cf;
   padding: 0.55rem 0.7rem;
   font-size: 0.82rem;
 }
@@ -405,7 +407,7 @@ body.app-shell {
   margin-bottom: 0.8rem;
   text-decoration: none;
   font-weight: 700;
-  color: #0c4a80;
+  color: #8edcff;
 }
 
 .article-panel {
@@ -422,42 +424,6 @@ body.app-shell {
   line-height: 1.8;
 }
 
-.icon-btn {
-  border: 1px solid #cad5e8;
-  border-radius: 999px;
-  padding: 0.45rem 0.8rem;
-  background: #fff;
-  color: #1f2937;
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.icon-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
-}
-
-.like-btn .heart {
-  font-size: 1rem;
-  color: #64748b;
-}
-
-.like-btn.is-active {
-  border-color: #fda4af;
-  background: #fff1f2;
-  color: #be123c;
-}
-
-.like-btn.is-active .heart {
-  color: var(--heart);
-}
-
 .comment-form {
   margin-top: 0.9rem;
   display: flex;
@@ -471,15 +437,15 @@ body.app-shell {
 }
 
 .comment-bubble {
-  border: 1px solid #d9e1ee;
+  border: 1px solid #324460;
   border-radius: 0.85rem;
   padding: 0.7rem;
-  background: #f8fbff;
+  background: rgba(11, 18, 31, 0.82);
 }
 
 .comment-text {
   margin: 0;
-  color: #334155;
+  color: #d7e4fb;
 }
 
 .comment-meta {
@@ -488,15 +454,15 @@ body.app-shell {
   flex-wrap: wrap;
   gap: 0.4rem;
   align-items: center;
-  color: #64748b;
+  color: #8ba2c6;
   font-size: 0.75rem;
 }
 
 .comment-meta button {
-  border: 1px solid #c9d4e7;
+  border: 1px solid #395277;
   border-radius: 999px;
-  background: #fff;
-  color: #334155;
+  background: rgba(19, 30, 49, 0.9);
+  color: #d2e2ff;
   font: inherit;
   font-size: 0.74rem;
   font-weight: 700;
@@ -505,16 +471,16 @@ body.app-shell {
 }
 
 .comment-meta button.comment-delete {
-  border-color: #f5c2c7;
-  color: #b91c1c;
+  border-color: #d76b7b;
+  color: #ffb3be;
 }
 
 .empty-note {
-  border: 1px dashed #cad4e3;
+  border: 1px dashed #3b4e6c;
   border-radius: 0.95rem;
   padding: 0.8rem;
-  color: #64748b;
-  background: #fff;
+  color: #9db0cf;
+  background: rgba(15, 22, 35, 0.7);
 }
 
 .pagination {
@@ -522,7 +488,7 @@ body.app-shell {
   border: 1px solid var(--line);
   border-radius: 1rem;
   padding: 0.65rem 0.8rem;
-  background: var(--surface-strong);
+  background: rgba(16, 24, 38, 0.9);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -532,7 +498,7 @@ body.app-shell {
 .pagination p {
   margin: 0;
   font-size: 0.85rem;
-  color: #475569;
+  color: #a4b5d3;
 }
 
 .editor-grid {
@@ -569,18 +535,18 @@ body.app-shell {
 }
 
 .admin-menu a {
-  border: 1px solid #d2dced;
+  border: 1px solid #33435f;
   border-radius: 0.8rem;
   padding: 0.6rem 0.75rem;
   text-decoration: none;
-  color: #1f2937;
+  color: #d7e6ff;
   font-weight: 700;
-  background: #fff;
+  background: rgba(16, 23, 36, 0.9);
 }
 
 .admin-menu a:hover {
-  border-color: #93c5fd;
-  color: #0b4a86;
+  border-color: #58b8fa;
+  color: #8fdcff;
 }
 
 .admin-content .hero {
@@ -595,10 +561,10 @@ body.app-shell {
 }
 
 .stat-card {
-  border: 1px solid #d5deed;
+  border: 1px solid #31435f;
   border-radius: 1rem;
   padding: 0.75rem;
-  background: #fff;
+  background: rgba(16, 24, 38, 0.95);
 }
 
 .stat-card .label {
@@ -606,7 +572,7 @@ body.app-shell {
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #64748b;
+  color: #89a1c6;
   font-weight: 700;
 }
 
@@ -614,7 +580,7 @@ body.app-shell {
   margin: 0.45rem 0 0;
   font-size: 1.42rem;
   font-weight: 800;
-  color: #0f172a;
+  color: #e6efff;
 }
 
 .charts-grid {
@@ -642,30 +608,31 @@ body.app-shell {
 }
 
 .simple-list li {
-  border: 1px solid #d8e1ef;
+  border: 1px solid #31445f;
   border-radius: 0.8rem;
   padding: 0.52rem 0.62rem;
-  background: #f8fbff;
+  background: rgba(16, 26, 42, 0.84);
   font-size: 0.86rem;
+  color: #d4e2fb;
 }
 
 .table-wrap {
   overflow-x: auto;
   margin-top: 0.85rem;
   border-radius: 0.85rem;
-  border: 1px solid #d7dfec;
+  border: 1px solid #2f415d;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
   min-width: 620px;
-  background: #fff;
+  background: rgba(13, 20, 33, 0.94);
 }
 
 .data-table thead {
-  background: #eff4ff;
-  color: #334155;
+  background: rgba(22, 34, 55, 0.95);
+  color: #b7cbe8;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -674,13 +641,14 @@ body.app-shell {
 .data-table th,
 .data-table td {
   padding: 0.58rem 0.65rem;
-  border-bottom: 1px solid #e3e9f4;
+  border-bottom: 1px solid #2c3d59;
   text-align: left;
   font-size: 0.84rem;
+  color: #dce8ff;
 }
 
 .muted {
-  color: #64748b;
+  color: #90a6cb;
   font-size: 0.82rem;
 }
 

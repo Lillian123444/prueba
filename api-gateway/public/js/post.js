@@ -4,7 +4,9 @@
     clearMessage,
     ensureAuth,
     escapeHtml,
+    formatDateTime,
     message,
+    parsePositiveInt,
     renderNavbar
   } = window.BlogApp;
 
@@ -18,26 +20,15 @@
   const commentsList = document.getElementById('comments-list');
 
   const params = new URLSearchParams(window.location.search);
-  const postId = Number(params.get('id'));
+  const postId = parsePositiveInt(params.get('id'));
 
-  if (!Number.isInteger(postId) || postId <= 0) {
+  if (!postId) {
     message('page-message', 'ID de articulo invalido', 'error');
     articleSlot.innerHTML = '<p class="empty-note">No se encontro el articulo solicitado.</p>';
     return;
   }
 
   let currentPost = null;
-
-  function formatDate(value) {
-    try {
-      return new Date(value).toLocaleString('es-BO', {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      });
-    } catch (_error) {
-      return String(value || '');
-    }
-  }
 
   function renderLikeButtonContent(liked, count) {
     const heart = liked ? '❤' : '♡';
@@ -54,7 +45,7 @@
         <p class="comment-text">${escapeHtml(comment.content)}</p>
         <div class="comment-meta">
           <span>💬 Autor ${comment.authorId}</span>
-          <span>${formatDate(comment.createdAt)}</span>
+          <span>${formatDateTime(comment.createdAt)}</span>
         </div>
       </div>
       ${replies.map((reply) => commentItemMarkup(reply, depth + 1)).join('')}
@@ -70,7 +61,7 @@
       <header class="post-header">
         <div>
           <h1 class="post-title article-title">${escapeHtml(post.title)}</h1>
-          <p class="post-meta">Autor ${post.authorId} · ${formatDate(post.createdAt)}</p>
+          <p class="post-meta">Autor ${post.authorId} · ${formatDateTime(post.createdAt)}</p>
         </div>
         <div class="tag-cloud">
           ${
