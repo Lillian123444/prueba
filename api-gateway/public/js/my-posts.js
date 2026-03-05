@@ -2,11 +2,15 @@
   const {
     api,
     clearMessage,
+    debounce,
     ensureAuth,
     escapeHtml,
     formatDateTime,
     message,
-    renderNavbar
+    parsePositiveInt,
+    readQueryState,
+    renderNavbar,
+    syncQueryState
   } = window.BlogApp;
 
   const user = await ensureAuth({ roles: ['admin', 'author'] });
@@ -15,11 +19,15 @@
     return;
   }
 
+  const queryState = readQueryState(['page', 'limit', 'q', 'tag']);
+  const rawLimit = parsePositiveInt(queryState.limit);
+  const allowedLimits = new Set([5, 10, 20]);
+
   const state = {
-    page: 1,
-    limit: 10,
-    q: '',
-    tag: '',
+    page: parsePositiveInt(queryState.page) || 1,
+    limit: rawLimit && allowedLimits.has(rawLimit) ? rawLimit : 10,
+    q: String(queryState.q || '').trim(),
+    tag: String(queryState.tag || '').trim(),
     totalPages: 1,
     total: 0,
     commentCounts: new Map()
@@ -34,6 +42,9 @@
   const pageInfo = document.getElementById('page-info');
   const prevPageBtn = document.getElementById('prev-page');
   const nextPageBtn = document.getElementById('next-page');
+
+  searchInput.value = state.q;
+  limitSelect.value = String(state.limit);
 
   const editorForm = document.getElementById('post-editor-form');
   const editingPostIdInput = document.getElementById('editing-post-id');
@@ -68,6 +79,26 @@
     }
 
     return `/api/posts/mine?${params.toString()}`;
+  }
+
+  function syncFiltersToUrl() {
+    syncQueryState(
+      {
+        page: state.page,
+        limit: state.limit,
+        q: state.q,
+        tag: state.tag
+      },
+      {
+        keys: ['page', 'limit', 'q', 'tag'],
+        defaults: {
+          page: 1,
+          limit: 10,
+          q: '',
+          tag: ''
+        }
+      }
+    );
   }
 
   function renderLikeButtonContent(liked, count) {
@@ -302,6 +333,7 @@
       state.limit = Number(pagination.limit || state.limit);
       state.total = Number(pagination.total || 0);
       state.totalPages = Math.max(1, Number(pagination.totalPages || 1));
+      syncFiltersToUrl();
       updatePaginationUi();
 
       if (items.length === 0) {
@@ -371,6 +403,7 @@
 
   filtersForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+    liveSearch.cancel();
 
     state.q = String(searchInput.value || '').trim();
     state.tag = String(tagFilter.value || '').trim();
@@ -381,6 +414,7 @@
   });
 
   clearFiltersBtn.addEventListener('click', async () => {
+    liveSearch.cancel();
     searchInput.value = '';
     tagFilter.value = '';
     limitSelect.value = '10';
@@ -391,6 +425,16 @@
     state.page = 1;
 
     await loadPosts();
+  });
+
+  const liveSearch = debounce(async () => {
+    state.q = String(searchInput.value || '').trim();
+    state.page = 1;
+    await loadPosts();
+  }, 300);
+
+  searchInput.addEventListener('input', () => {
+    liveSearch();
   });
 
   prevPageBtn.addEventListener('click', async () => {
