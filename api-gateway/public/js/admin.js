@@ -1,5 +1,5 @@
 (async () => {
-  const { api, ensureAuth, escapeHtml, message, renderNavbar, roleLabel } = window.BlogApp;
+  const { api, ensureAuth, escapeHtml, formatDateTime, message, renderNavbar, roleLabel } = window.BlogApp;
 
   const user = await ensureAuth({ roles: ['admin'] });
   renderNavbar();
@@ -82,6 +82,9 @@
       return;
     }
 
+    const chartTextColor = '#cfe3ff';
+    const chartGridColor = 'rgba(126, 162, 209, 0.28)';
+
     const roleStats = stats.users?.byRole || {};
     const roleValues = [
       Number(roleStats.admin || 0),
@@ -107,7 +110,10 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'bottom'
+              position: 'bottom',
+              labels: {
+                color: chartTextColor
+              }
             }
           }
         }
@@ -139,7 +145,19 @@
             y: {
               beginAtZero: true,
               ticks: {
-                precision: 0
+                precision: 0,
+                color: chartTextColor
+              },
+              grid: {
+                color: chartGridColor
+              }
+            },
+            x: {
+              ticks: {
+                color: chartTextColor
+              },
+              grid: {
+                color: 'rgba(0,0,0,0)'
               }
             }
           },
@@ -177,7 +195,19 @@
             y: {
               beginAtZero: true,
               ticks: {
-                precision: 0
+                precision: 0,
+                color: chartTextColor
+              },
+              grid: {
+                color: chartGridColor
+              }
+            },
+            x: {
+              ticks: {
+                color: chartTextColor
+              },
+              grid: {
+                color: 'rgba(0,0,0,0)'
               }
             }
           },
@@ -221,8 +251,7 @@
     );
 
     if (statsGeneratedAt) {
-      const generatedDate = stats.generatedAt ? new Date(stats.generatedAt) : new Date();
-      statsGeneratedAt.textContent = `Ultima actualizacion: ${generatedDate.toLocaleString('es-BO')}`;
+      statsGeneratedAt.textContent = `Ultima actualizacion: ${formatDateTime(stats.generatedAt || new Date(), { timeStyle: 'medium' })}`;
     }
 
     renderCharts(stats);

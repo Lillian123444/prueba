@@ -133,8 +133,8 @@
 
   function navLink(href, label, isActive) {
     const activeClasses = isActive
-      ? 'bg-sky-100 text-sky-800 ring-1 ring-sky-300'
-      : 'text-slate-700 hover:text-sky-700';
+      ? 'bg-cyan-500/20 text-cyan-200 ring-1 ring-cyan-400/40'
+      : 'text-slate-300 hover:text-cyan-200';
     return `<a href="${href}" class="rounded-full px-3 py-1.5 text-sm font-semibold transition ${activeClasses}">${label}</a>`;
   }
 
@@ -170,15 +170,15 @@
     const links = user ? privateLinks : publicLinks;
 
     target.innerHTML = `
-      <div class="w-full border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div class="w-full border-b border-slate-700/60 bg-slate-950/90 backdrop-blur">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-4">
-          <a href="/posts.html" class="text-lg font-bold text-slate-900">Blog Microservicios</a>
+          <a href="/posts.html" class="text-lg font-bold text-slate-100">Blog Microservicios</a>
           <div class="flex flex-wrap items-center gap-2">
             ${links.join('')}
             ${
               user
-                ? `<span class="rounded-full bg-sky-100 px-3 py-1 text-xs font-semibold text-sky-700">${roleLabel(user.role)}</span>
-                   <button id="logout-btn" class="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white hover:bg-slate-800">Salir</button>`
+                ? `<span class="rounded-full bg-cyan-500/15 px-3 py-1 text-xs font-semibold text-cyan-200 ring-1 ring-cyan-400/30">${roleLabel(user.role)}</span>
+                   <button id="logout-btn" class="rounded-lg border border-slate-600 bg-slate-900 px-3 py-2 text-xs font-semibold text-slate-100 hover:border-cyan-400/50 hover:text-cyan-200">Salir</button>`
                 : ''
             }
           </div>
@@ -204,6 +204,28 @@
       .replaceAll("'", '&#39;');
   }
 
+  function formatDateTime(value, options = {}) {
+    const {
+      locale = 'es-BO',
+      dateStyle = 'medium',
+      timeStyle = 'short'
+    } = options;
+
+    try {
+      return new Date(value).toLocaleString(locale, { dateStyle, timeStyle });
+    } catch (_error) {
+      return String(value || '');
+    }
+  }
+
+  function parsePositiveInt(rawValue) {
+    const parsed = Number(rawValue);
+    if (!Number.isInteger(parsed) || parsed <= 0) {
+      return null;
+    }
+    return parsed;
+  }
+
   function message(targetId, text, variant = 'info') {
     const element = document.getElementById(targetId);
     if (!element) {
@@ -211,9 +233,9 @@
     }
 
     const styles = {
-      info: 'bg-sky-50 text-sky-700 border-sky-200',
-      error: 'bg-red-50 text-red-700 border-red-200',
-      success: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+      info: 'bg-cyan-500/10 text-cyan-200 border-cyan-400/30',
+      error: 'bg-red-500/10 text-red-200 border-red-400/35',
+      success: 'bg-emerald-500/10 text-emerald-200 border-emerald-400/35'
     };
 
     element.className = `rounded-lg border px-3 py-2 text-sm ${styles[variant] || styles.info}`;
@@ -238,10 +260,12 @@
     ensureAuth,
     ensureGuest,
     escapeHtml,
+    formatDateTime,
     getToken,
     getUser,
     hasRole,
     message,
+    parsePositiveInt,
     renderNavbar,
     roleLabel,
     setSession,

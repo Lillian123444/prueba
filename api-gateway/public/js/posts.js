@@ -4,6 +4,7 @@
     clearMessage,
     ensureAuth,
     escapeHtml,
+    formatDateTime,
     hasRole,
     message,
     renderNavbar
@@ -40,17 +41,6 @@
   const pageInfo = document.getElementById('page-info');
   const prevPageBtn = document.getElementById('prev-page');
   const nextPageBtn = document.getElementById('next-page');
-
-  function formatDate(value) {
-    try {
-      return new Date(value).toLocaleString('es-BO', {
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      });
-    } catch (_error) {
-      return String(value || '');
-    }
-  }
 
   function buildPostsUrl() {
     const params = new URLSearchParams();
@@ -103,7 +93,7 @@
           <h2 class="post-title">${escapeHtml(post.title)}</h2>
           <span class="post-open-hint">Abrir articulo</span>
         </div>
-        <p class="post-meta">Autor ${post.authorId} · ${formatDate(post.createdAt)}</p>
+        <p class="post-meta">Autor ${post.authorId} · ${formatDateTime(post.createdAt)}</p>
 
         <div class="engagement-strip compact-engagement">
           <button
