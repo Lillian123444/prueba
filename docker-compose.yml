@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   users-db:
     image: postgres:16-alpine
@@ -8,8 +10,8 @@ services:
       POSTGRES_PASSWORD: userspass
     volumes:
       - users_data:/var/lib/postgresql/data
-    ports:
-      - "5433:5432"
+    networks:
+      - backend
 
   posts-db:
     image: postgres:16-alpine
@@ -20,8 +22,8 @@ services:
       POSTGRES_PASSWORD: postspass
     volumes:
       - posts_data:/var/lib/postgresql/data
-    ports:
-      - "5434:5432"
+    networks:
+      - backend
 
   comments-db:
     image: postgres:16-alpine
@@ -32,25 +34,21 @@ services:
       POSTGRES_PASSWORD: commentspass
     volumes:
       - comments_data:/var/lib/postgresql/data
-    ports:
-      - "5435:5432"
+    networks:
+      - backend
 
   users-service:
-    build:
-      context: ./services/users-service
-    container_name: users-service
+    build: ./services/users-service
     environment:
       PORT: 3002
       DATABASE_URL: postgres://users:userspass@users-db:5432/usersdb
     depends_on:
       - users-db
-    ports:
-      - "3002:3002"
+    networks:
+      - backend
 
   auth-service:
-    build:
-      context: ./services/auth-service
-    container_name: auth-service
+    build: ./services/auth-service
     environment:
       PORT: 3001
       USERS_SERVICE_URL: http://users-service:3002
@@ -58,13 +56,11 @@ services:
       JWT_EXPIRES_IN: 24h
     depends_on:
       - users-service
-    ports:
-      - "3001:3001"
+    networks:
+      - backend
 
   posts-service:
-    build:
-      context: ./services/posts-service
-    container_name: posts-service
+    build: ./services/posts-service
     environment:
       PORT: 3003
       DATABASE_URL: postgres://posts:postspass@posts-db:5432/postsdb
@@ -72,13 +68,11 @@ services:
     depends_on:
       - posts-db
       - users-service
-    ports:
-      - "3003:3003"
+    networks:
+      - backend
 
   comments-service:
-    build:
-      context: ./services/comments-service
-    container_name: comments-service
+    build: ./services/comments-service
     environment:
       PORT: 3004
       DATABASE_URL: postgres://comments:commentspass@comments-db:5432/commentsdb
@@ -88,13 +82,11 @@ services:
       - comments-db
       - users-service
       - posts-service
-    ports:
-      - "3004:3004"
+    networks:
+      - backend
 
   api-gateway:
-    build:
-      context: ./api-gateway
-    container_name: api-gateway
+    build: ./api-gateway
     environment:
       PORT: 3000
       AUTH_SERVICE_URL: http://auth-service:3001
@@ -109,6 +101,11 @@ services:
       - comments-service
     ports:
       - "3000:3000"
+    networks:
+      - backend
+
+networks:
+  backend:
 
 volumes:
   users_data:
